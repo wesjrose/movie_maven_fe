@@ -1,18 +1,57 @@
 "use client";
 import path from "path";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Movie } from "@/lib/interface/movie";
 
+const fetchMoviesFromApi = async (): Promise<any> => {
+  const response = await fetch("http://127.0.0.1:8000/movie/movies");
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  // @ts-ignore
+  const data = await response.json();
+  return data;
+};
+
 export default function Home() {
-  const [moviesList, setMoviesList] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const getMovies = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const { movies: rawMovies } = await fetchMoviesFromApi();
+
+      // Parse and map the raw data to the Movie interface
+      const parsedMovies: Movie[] = rawMovies.map((movie: any) => ({
+        id: String(movie.id),
+        title: movie.title,
+        year: movie.year,
+        poster_url: movie.poster_url,
+        description: movie.overview,
+      }));
+      setMovies(parsedMovies);
+    } catch (err: any) {
+      console.error("Failed to fetch or parse movies:", err);
+      setError(err.message || "An unknown error occurred.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    if (moviesList) {
-      console.log("the movies list loaded is:\n", moviesList);
+    getMovies();
+  }, []);
+
+  useEffect(() => {
+    if (movies) {
+      console.log(movies);
     }
-  }, [moviesList]);
+  }, [movies]);
 
   return (
     <div>

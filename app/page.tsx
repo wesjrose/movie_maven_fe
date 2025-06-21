@@ -1,6 +1,19 @@
+"use client";
+import path from "path";
+import React, { useEffect, useState } from "react";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Movie } from "@/lib/interface/movie";
 
 export default function Home() {
+  const [moviesList, setMoviesList] = useState<Movie[]>([]);
+
+  useEffect(() => {
+    if (moviesList) {
+      console.log("the movies list loaded is:\n", moviesList);
+    }
+  }, [moviesList]);
+
   return (
     <div>
       <div className="container mx-auto px-4 py-6">

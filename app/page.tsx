@@ -4,6 +4,8 @@ import React, { useEffect, useState, useCallback } from "react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Movie } from "@/lib/interface/movie";
+// import { MovieCard } from "@/components/custom/movie-card/movie-card";
+import { MovieGrid } from "@/components/custom/movie-grid/movie_grid";
 
 const fetchMoviesFromApi = async (): Promise<any> => {
   const response = await fetch("http://127.0.0.1:8000/movie/movies");
@@ -67,8 +69,7 @@ export default function Home() {
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="all-movies">
-                This is where all movies will be visible. Here users can select
-                what movies they have already seen
+                <MovieGrid movies={movies}></MovieGrid>
               </TabsContent>
               <TabsContent value="recommended-movies">
                 This is where users can view recommended movies

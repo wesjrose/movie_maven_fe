@@ -67,6 +67,7 @@ export default function Home() {
   useEffect(() => {
     if (fetchMoviesSuccess && newMoviesData) {
       console.log("data before parsing", newMoviesData);
+      setLoading(true);
       const parsedMovies: Movie[] = newMoviesData.map((movie: any) => ({
         id: String(movie.id),
         title: movie.title,
@@ -93,13 +94,14 @@ export default function Home() {
 
   useEffect(() => {
     if (
-      inView &&
-      !isFetchingMoreMovies &&
-      fetchMoviesSuccess &&
-      newMoviesData.length > 0
+      (inView &&
+        !isLoadingMovies &&
+        fetchMoviesSuccess &&
+        newMoviesData.length > 0,
+      !loading)
     ) {
       console.log("setting recPage: ", recPage + 1);
-      setRecPage((prevPage) => prevPage + 1);
+      setRecPage(recPage + 1);
     }
   }, [inView, isFetchingMoreMovies, fetchMoviesSuccess, newMoviesData]);
 
@@ -118,17 +120,6 @@ export default function Home() {
               </TabsList>
               <TabsContent value="all-movies">
                 <MovieGrid movies={movies}></MovieGrid>
-                <div ref={ref} className="text-center p-4">
-                  {isFetchingMoreMovies && <p>Loading more movies...</p>}
-                  {!isFetchingMoreMovies &&
-                    !isLoadingMovies &&
-                    movies.length > 0 && (
-                      // You might want to add a trigger here if no more data is expected or an explicit "Load More" button
-                      <p>
-                        Scroll down for more or (Reached end of results for now)
-                      </p>
-                    )}
-                </div>
               </TabsContent>
               <TabsContent value="recommended-movies">
                 This is where users can view recommended movies
@@ -136,6 +127,13 @@ export default function Home() {
             </Tabs>
           </div>
         </div>
+      </div>
+      <div ref={ref} className="text-center p-4">
+        {isFetchingMoreMovies && <p>Loading more movies...</p>}
+        {!isFetchingMoreMovies && !isLoadingMovies && movies.length > 0 && (
+          // You might want to add a trigger here if no more data is expected or an explicit "Load More" button
+          <p>Scroll down for more or (Reached end of results for now)</p>
+        )}
       </div>
     </div>
   );

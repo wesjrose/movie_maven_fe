@@ -6,6 +6,7 @@ import { useQueryMovies } from "./api/movies/useQueryMovies";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Movie } from "@/lib/interface/movie";
 import { MovieGrid } from "@/components/custom/movie-grid/movie_grid";
+import { useInView } from "react-intersection-observer";
 
 const fetchMoviesFromApi = async (page: number): Promise<any> => {
   const axios = useAxios();
@@ -25,11 +26,17 @@ export default function Home() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [recPage, setRecPage] = useState<number>(1);
+  const { ref, inView } = useInView({
+    threshold: 0.9,
+  });
 
   const {
-    data,
+    data: newMoviesData,
     isLoading: isLoadingMovies,
     isSuccess: fetchMoviesSuccess,
+    isFetching: isFetchingMoreMovies,
+    isError: isErrorMovies,
+    error: moviesError,
   } = useQueryMovies({
     page: recPage,
   });
@@ -58,24 +65,43 @@ export default function Home() {
   // }, []);
 
   useEffect(() => {
-    if (data) {
-      console.log("data before parsing", data);
-      const parsedMovies: Movie[] = data.map((movie: any) => ({
+    if (fetchMoviesSuccess && newMoviesData) {
+      console.log("data before parsing", newMoviesData);
+      const parsedMovies: Movie[] = newMoviesData.map((movie: any) => ({
         id: String(movie.id),
         title: movie.title,
         year: movie.year,
         poster_url: movie.poster_url,
         description: movie.overview,
       }));
-      setMovies(parsedMovies);
+      setMovies((movies) => [...movies, ...parsedMovies]);
+      setLoading(false);
     }
-  }, [fetchMoviesSuccess]);
+  }, [
+    fetchMoviesSuccess,
+    newMoviesData,
+    isErrorMovies,
+    moviesError,
+    isLoadingMovies,
+  ]);
 
   // useEffect(() => {
   //   if (movies) {
   //     console.log(movies);
   //   }
   // }, [movies]);
+
+  useEffect(() => {
+    if (
+      inView &&
+      !isFetchingMoreMovies &&
+      fetchMoviesSuccess &&
+      newMoviesData.length > 0
+    ) {
+      console.log("setting recPage: ", recPage + 1);
+      setRecPage((prevPage) => prevPage + 1);
+    }
+  }, [inView, isFetchingMoreMovies, fetchMoviesSuccess, newMoviesData]);
 
   return (
     <div>
@@ -92,6 +118,17 @@ export default function Home() {
               </TabsList>
               <TabsContent value="all-movies">
                 <MovieGrid movies={movies}></MovieGrid>
+                <div ref={ref} className="text-center p-4">
+                  {isFetchingMoreMovies && <p>Loading more movies...</p>}
+                  {!isFetchingMoreMovies &&
+                    !isLoadingMovies &&
+                    movies.length > 0 && (
+                      // You might want to add a trigger here if no more data is expected or an explicit "Load More" button
+                      <p>
+                        Scroll down for more or (Reached end of results for now)
+                      </p>
+                    )}
+                </div>
               </TabsContent>
               <TabsContent value="recommended-movies">
                 This is where users can view recommended movies

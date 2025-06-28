@@ -2,7 +2,7 @@
 import "./movie-card.scss";
 
 import { useState } from "react";
-import { ThumbsUp, ThumbsDown, Calendar } from "lucide-react";
+import { ThumbsUp, ThumbsDown, Calendar, UndoIcon } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -14,6 +14,7 @@ interface MovieCardProps {
   genres?: string[];
   poster?: string;
   rating?: number;
+  ref?: any;
 }
 
 export const MovieCard = ({
@@ -22,6 +23,7 @@ export const MovieCard = ({
   genres = ["Action", "Crime", "Drama"],
   poster = "/placeholder.svg?height=400&width=300",
   rating = 9.0,
+  ref = undefined,
 }: MovieCardProps) => {
   const [feedback, setFeedback] = useState<"like" | "dislike" | null>(null);
 
@@ -34,7 +36,10 @@ export const MovieCard = ({
   };
 
   return (
-    <Card className="w-full max-w-sm overflow-hidden transition-all hover:shadow-lg bg-gray-900 border-gray-700 movie-card">
+    <Card
+      className="w-full max-w-sm overflow-hidden transition-all hover:shadow-lg bg-gray-900 border-gray-700 movie-card"
+      ref={ref}
+    >
       <CardHeader className="p-0">
         <div className="relative bg-gray-800">
           <img

@@ -1,46 +1,65 @@
 "use client";
 import path from "path";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { useAxios } from "@/app/hooks/axios/useAxios";
-import { useQueryMovies } from "./api/movies/useQueryMovies";
+import { useMoviesInfinite } from "./api/movies/useQueryMoviesInfinite";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Movie } from "@/lib/interface/movie";
 import { MovieGrid } from "@/components/custom/movie-grid/movie_grid";
 import { useInView } from "react-intersection-observer";
 
-const fetchMoviesFromApi = async (page: number): Promise<any> => {
-  const axios = useAxios();
-  return axios
-    .get("movie/movies", {
-      params: {
-        page: page,
-      },
-    })
-    .then((response) => {
-      return response?.data ?? response;
-    });
-};
+// const fetchMoviesFromApi = async (page: number): Promise<any> => {
+//   const axios = useAxios();
+//   return axios
+//     .get("movie/movies", {
+//       params: {
+//         page: page,
+//       },
+//     })
+//     .then((response) => {
+//       return response?.data ?? response;
+//     });
+// };
 
 export default function Home() {
-  const [movies, setMovies] = useState<Movie[]>([]);
+  const [movies, setMovies] = useState<Movie[] | undefined>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
+  // const [error, setError] = useState<string | null>(null);
   const [recPage, setRecPage] = useState<number>(1);
   const { ref, inView } = useInView({
     threshold: 0.9,
   });
 
   const {
-    data: newMoviesData,
-    isLoading: isLoadingMovies,
-    isSuccess: fetchMoviesSuccess,
-    isFetching: isFetchingMoreMovies,
-    isError: isErrorMovies,
-    error: moviesError,
-  } = useQueryMovies({
-    page: recPage,
-  });
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    isError,
+    error,
+  } = useMoviesInfinite();
 
+  const lastMovieElementRef = useRef<HTMLDivElement>(null);
+  const observer = useRef<IntersectionObserver>(null);
+  const handleObserver = useCallback(
+    (node: HTMLDivElement) => {
+      if (isLoading || isFetchingNextPage) return;
+
+      if (observer.current) observer.current.disconnect();
+
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && hasNextPage) {
+          fetchNextPage();
+        }
+      });
+
+      if (node) observer.current.observe(node);
+    },
+    [isLoading, isFetchingNextPage, hasNextPage, fetchNextPage]
+  );
+  //@ts-ignore
+  const allMovies = data?.pages.flatMap((page) => page.movies) || [];
   // const getMovies = useCallback(async () => {
   //   setLoading(true);
   //   setError(null);
@@ -64,46 +83,13 @@ export default function Home() {
   //   }
   // }, []);
 
-  useEffect(() => {
-    if (fetchMoviesSuccess && newMoviesData) {
-      console.log("data before parsing", newMoviesData);
-      setLoading(true);
-      const parsedMovies: Movie[] = newMoviesData.map((movie: any) => ({
-        id: String(movie.id),
-        title: movie.title,
-        year: movie.year,
-        poster_url: movie.poster_url,
-        description: movie.overview,
-      }));
-      setMovies((movies) => [...movies, ...parsedMovies]);
-      setLoading(false);
-    }
-  }, [
-    fetchMoviesSuccess,
-    newMoviesData,
-    isErrorMovies,
-    moviesError,
-    isLoadingMovies,
-  ]);
-
   // useEffect(() => {
   //   if (movies) {
   //     console.log(movies);
   //   }
   // }, [movies]);
 
-  useEffect(() => {
-    if (
-      (inView &&
-        !isLoadingMovies &&
-        fetchMoviesSuccess &&
-        newMoviesData.length > 0,
-      !loading)
-    ) {
-      console.log("setting recPage: ", recPage + 1);
-      setRecPage(recPage + 1);
-    }
-  }, [inView, isFetchingMoreMovies, fetchMoviesSuccess, newMoviesData]);
+  console.log("the response from movies data is: ", data);
 
   return (
     <div>
@@ -119,7 +105,7 @@ export default function Home() {
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="all-movies">
-                <MovieGrid movies={movies}></MovieGrid>
+                <MovieGrid movies={allMovies} ref={handleObserver}></MovieGrid>
               </TabsContent>
               <TabsContent value="recommended-movies">
                 This is where users can view recommended movies
@@ -127,13 +113,6 @@ export default function Home() {
             </Tabs>
           </div>
         </div>
-      </div>
-      <div ref={ref} className="text-center p-4">
-        {isFetchingMoreMovies && <p>Loading more movies...</p>}
-        {!isFetchingMoreMovies && !isLoadingMovies && movies.length > 0 && (
-          // You might want to add a trigger here if no more data is expected or an explicit "Load More" button
-          <p>Scroll down for more or (Reached end of results for now)</p>
-        )}
       </div>
     </div>
   );

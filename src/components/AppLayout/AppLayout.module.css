@@ -1,0 +1,5 @@
+.dt_app_layout {
+    display: grid;
+    min-height: 100vh;
+}
+

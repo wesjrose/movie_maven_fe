@@ -1,4 +1,5 @@
 import classes from "./NewReleases.module.css";
+import Filter from "../Filter/Filter";
 
 export default function NewReleases() {
   return (
@@ -10,6 +11,7 @@ export default function NewReleases() {
         genre, release year, and rating. Explore new releases effortlessly and
         never miss your next favorite film.
       </h6>
+      <Filter />
     </div>
   );
 }

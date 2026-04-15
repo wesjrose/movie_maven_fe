@@ -1,3 +1,11 @@
+@import "tailwindcss";
+
 :root {
   background-color: #F8F9FA;
+  --font-lexend: 'Lexend', sans-serif;
+  --grey-colour: #72768b;
+}
+
+body {
+  margin: 0;
 }

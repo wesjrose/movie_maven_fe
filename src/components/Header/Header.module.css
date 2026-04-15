@@ -2,10 +2,15 @@ header {
     display: flex;
     height: 2rem;
     align-items: center;
+    padding-top: 1.7rem;
+    padding-bottom: 1.7rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    
 }
 
-.header_logo {
-    font-family: 'Lexend', sans-serif, 'Roboto';
+.header-logo {
+    font-family: var(--font-lexend);
     font-weight: bold;
     font-size: 1.5rem;
     padding: 1.5rem;

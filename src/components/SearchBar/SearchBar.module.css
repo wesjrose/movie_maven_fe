@@ -1,0 +1,15 @@
+.search-bar {
+    margin-left: auto;
+    margin-right: 2rem;
+    display: flex;
+    align-items: center;
+    border-radius: 20px;
+    width: 18rem; 
+    height: 2rem;  
+    padding: 10px;
+    color: var(--grey-colour);
+    background-color: white;
+    
+}
+
+

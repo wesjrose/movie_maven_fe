@@ -1,6 +1,6 @@
 .dt_app_layout {
     display: grid;
     min-height: 100vh;
-    grid-template-rows: 5rem 1fr 3rem;
+    grid-template-rows: 3rem 1fr 3rem;
 }
 

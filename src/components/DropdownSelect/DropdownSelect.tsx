@@ -1,58 +1,78 @@
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/20/solid";
+import { useState } from "react";
+import {
+  Label,
+  Listbox,
+  ListboxButton,
+  ListboxOption,
+  ListboxOptions,
+} from "@headlessui/react";
+import { ChevronUpDownIcon } from "@heroicons/react/16/solid";
+import { CheckIcon } from "@heroicons/react/20/solid";
 
-export default function DropdownSelect() {
+const items = [
+  {
+    id: 1,
+    name: "Comedy",
+  },
+  {
+    id: 2,
+    name: "Action",
+  },
+  {
+    id: 3,
+    name: "Adventure",
+  },
+  {
+    id: 4,
+    name: "Animation",
+  },
+  {
+    id: 5,
+    name: "Fantasy",
+  },
+];
+
+export default function Example() {
+  const [selected, setSelected] = useState<{ id: number; name: string }[]>([]);
+
   return (
-    <Menu as="div" className="relative inline-block">
-      <MenuButton className="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white/10 px-3 py-2 text-sm font-semibold text-white inset-ring-1 inset-ring-white/5 hover:bg-white/20">
-        Options
-        <ChevronDownIcon
-          aria-hidden="true"
-          className="-mr-1 size-5 text-gray-400"
-        />
-      </MenuButton>
+    <Listbox value={selected} onChange={setSelected} multiple>
+      <div className="relative w-fit pl-5 pr-5 mt-0">
+        <ListboxButton className="grid w-auto cursor-default grid-cols-1 rounded-md bg-white py-1.5 pr-2 pl-3 text-left text-black outline-1 -outline-offset-1 outline-white/10 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6">
+          <span className="col-start-1 row-start-1 flex items-center gap-3 pr-6">
+            {selected.length > 0
+              ? selected.map((s) => s.name).join(", ")
+              : "All Genres"}
+          </span>
+          <ChevronUpDownIcon
+            aria-hidden="true"
+            className="col-start-1 row-start-1 size-5 self-center justify-self-end text-gray-400 sm:size-4"
+          />
+        </ListboxButton>
 
-      <MenuItems
-        transition
-        className="absolute  mt-2 w-56 origin-top-right rounded-md bg-white-800 outline-1 -outline-offset-1 outline-white/10 transition data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
-      >
-        <div className="py-1">
-          <MenuItem>
-            <a
-              href="#"
-              className="block px-4 py-2 text-sm text-gray-300 data-focus:bg-white/5 data-focus:text-white data-focus:outline-hidden"
+        <ListboxOptions
+          transition
+          className="border border-[#F0F3F5] absolute z-10 mt-1 max-h-56 w-auto overflow-auto rounded-md bg-white py-1 text-base data-leave:transition data-leave:duration-100 data-leave:ease-in data-closed:data-leave:opacity-0 sm:text-sm outline-none"
+        >
+          {items.map((person) => (
+            <ListboxOption
+              key={person.id}
+              value={person}
+              className="group relative cursor-default py-2 pr-12 pl-3 text-black select-none data-focus:bg-indigo-500 data-focus:outline-hidden"
             >
-              Account settings
-            </a>
-          </MenuItem>
-          <MenuItem>
-            <a
-              href="#"
-              className="block px-4 py-2 text-sm text-gray-300 data-focus:bg-white/5 data-focus:text-white data-focus:outline-hidden"
-            >
-              Support
-            </a>
-          </MenuItem>
-          <MenuItem>
-            <a
-              href="#"
-              className="block px-4 py-2 text-sm text-gray-300 data-focus:bg-white/5 data-focus:text-white data-focus:outline-hidden"
-            >
-              License
-            </a>
-          </MenuItem>
-          <form action="#" method="POST">
-            <MenuItem>
-              <button
-                type="submit"
-                className="block w-full px-4 py-2 text-left text-sm text-gray-300 data-focus:bg-white/5 data-focus:text-white data-focus:outline-hidden"
-              >
-                Sign out
-              </button>
-            </MenuItem>
-          </form>
-        </div>
-      </MenuItems>
-    </Menu>
+              <div className="flex items-center">
+                <span className="ml-3 block truncate font-normal group-data-selected:font-semibold">
+                  {person.name}
+                </span>
+              </div>
+
+              <span className="absolute inset-y-0 right-0 flex items-center pr-4 text-indigo-400 group-not-data-selected:hidden group-data-focus:text-white">
+                <CheckIcon aria-hidden="true" className="size-5" />
+              </span>
+            </ListboxOption>
+          ))}
+        </ListboxOptions>
+      </div>
+    </Listbox>
   );
 }

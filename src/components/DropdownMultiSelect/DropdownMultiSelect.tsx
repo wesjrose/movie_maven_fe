@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { Dispatch, SetStateAction } from "react";
 import {
   Label,
   Listbox,
@@ -8,10 +9,11 @@ import {
 } from "@headlessui/react";
 import { ChevronUpDownIcon } from "@heroicons/react/16/solid";
 import { CheckIcon } from "@heroicons/react/20/solid";
+import type { dropdownItem } from "../../types";
 
 const labelLength: number = 10;
 
-const items = [
+const items: dropdownItem[] = [
   {
     id: 1,
     name: "Comedy",
@@ -34,23 +36,30 @@ const items = [
   },
 ];
 
-export default function Example() {
-  const [selected, setSelected] = useState<{ id: number; name: string }[]>([]);
+interface DropdownMultiSelectProps {
+  options: dropdownItem[];
+  selected: dropdownItem[];
+  setSelected: Dispatch<SetStateAction<dropdownItem[]>>;
+}
+
+export default function DropdownMultiSelect(props: DropdownMultiSelectProps) {
   const displayText: string =
-    selected.length > 0 ? selected.map((s) => s.name).join(", ") : "All Genres";
+    props.selected.length > 0
+      ? props.selected.map((s) => s.name).join(", ")
+      : "All Genres";
   const truncDisplayText: string =
     displayText.length > labelLength
       ? displayText.slice(0, labelLength) + "..."
       : displayText;
 
   return (
-    <Listbox value={selected} onChange={setSelected} multiple>
+    <Listbox value={props.selected} onChange={props.setSelected} multiple>
       <div className="relative w-fit pl-5 pr-5 mt-0">
         <ListboxButton className="grid w-auto cursor-default grid-cols-1 rounded-md bg-white py-1.5 pr-2 pl-3 text-left text-black outline-1 -outline-offset-1 outline-white/10 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-500 sm:text-sm/6">
           <span className="col-start-1 row-start-1 flex items-center gap-3 pr-6">
             <span className="relative group">
               {displayText.length > labelLength && (
-                <div className="absolute bottom-full mb-2  hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap">
+                <div className="absolute bottom-full mb-2 hidden group-hover:block bg-gray-800 text-white text-xs rounded px-2 py-1 whitespace-nowrap">
                   {displayText}
                 </div>
               )}

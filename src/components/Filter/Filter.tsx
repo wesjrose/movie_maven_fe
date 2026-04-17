@@ -31,6 +31,7 @@ export default function Filter() {
   return (
     <div className={classes["filter-container"]}>
       <DropdownMultiSelect
+        defaultText="All Genres"
         options={genreOptions}
         selected={selectedGenres}
         setSelected={setSelectedGenres}

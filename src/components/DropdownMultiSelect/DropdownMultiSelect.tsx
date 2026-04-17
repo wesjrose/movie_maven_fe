@@ -37,6 +37,7 @@ const items: dropdownItem[] = [
 ];
 
 interface DropdownMultiSelectProps {
+  defaultText: string;
   options: dropdownItem[];
   selected: dropdownItem[];
   setSelected: Dispatch<SetStateAction<dropdownItem[]>>;
@@ -46,7 +47,7 @@ export default function DropdownMultiSelect(props: DropdownMultiSelectProps) {
   const displayText: string =
     props.selected.length > 0
       ? props.selected.map((s) => s.name).join(", ")
-      : "All Genres";
+      : props.defaultText;
   const truncDisplayText: string =
     displayText.length > labelLength
       ? displayText.slice(0, labelLength) + "..."

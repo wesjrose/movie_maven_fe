@@ -52,8 +52,11 @@ a:hover {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.5rem;
-  padding: 0.9rem 1.5rem;
+  gap: 0.75rem;
+  padding: 0.35rem 1rem;
+  padding-top: max(0.35rem, env(safe-area-inset-top));
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
   border-bottom: 1px solid var(--border);
   background: var(--surface);
   position: sticky;
@@ -65,6 +68,9 @@ a:hover {
   color: var(--text);
   font-weight: 650;
   letter-spacing: 0.02em;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
 }
 
 .brand:hover {
@@ -73,13 +79,18 @@ a:hover {
 
 .app-nav {
   display: flex;
-  gap: 0.35rem;
+  gap: 0.25rem;
 }
 
 .app-nav a {
   color: var(--muted);
-  padding: 0.4rem 0.75rem;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0.65rem 0.85rem;
   border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .app-nav a:hover,
@@ -92,19 +103,43 @@ a:hover {
   flex: 1;
   width: min(960px, 100%);
   margin: 0 auto;
-  padding: 2rem 1.5rem 3rem;
+  padding: 1rem 1rem 2rem;
+  padding-bottom: max(2rem, env(safe-area-inset-bottom));
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
 }
 
 .page h1 {
   margin: 0 0 0.5rem;
-  font-size: 2rem;
+  font-size: 1.5rem;
   font-weight: 600;
   letter-spacing: -0.03em;
+}
+
+@media (min-width: 640px) {
+  .app-header {
+    gap: 1.5rem;
+    padding: 0.5rem 1.5rem;
+  }
+
+  .app-main {
+    padding: 2rem 1.5rem 3rem;
+  }
+
+  .page h1 {
+    font-size: 2rem;
+  }
 }
 
 .page p,
 .page li {
   color: var(--muted);
+}
+
+.page a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
 }
 
 .page code {
@@ -150,4 +185,108 @@ a:hover {
 
 .error-title {
   color: var(--danger);
+}
+
+.movie-feed {
+  list-style: none;
+  margin: 1rem 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.movie-card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.movie-card__poster {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  max-height: calc(100svh - 8rem);
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  object-position: center top;
+  background: var(--surface-2);
+}
+
+.movie-card__poster--empty {
+  min-height: 16rem;
+}
+
+.movie-card__body {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 3.5rem 1rem 1rem;
+  background: linear-gradient(to top, rgb(15 17 21 / 0.92) 35%, transparent);
+}
+
+.movie-card__title {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--text);
+  overflow-wrap: anywhere;
+}
+
+.movie-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 0.4rem 0 0;
+  color: var(--muted);
+}
+
+.movie-card__date {
+  overflow-wrap: anywhere;
+}
+
+.movie-card__rating {
+  min-width: 2rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  background: var(--accent);
+  color: var(--bg);
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.feed-sentinel {
+  height: 1px;
+}
+
+.feed-status {
+  padding: 1.25rem 0 2rem;
+  text-align: center;
+  color: var(--muted);
+}
+
+.feed-status p {
+  margin: 0;
+}
+
+.retry-button {
+  min-height: 44px;
+  min-width: 44px;
+  margin-top: 0.75rem;
+  padding: 0.65rem 1.1rem;
+  font: inherit;
+  font-size: 1rem;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.retry-button:hover {
+  border-color: var(--accent);
 }

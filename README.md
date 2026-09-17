@@ -20,7 +20,9 @@ npm install
 npm run dev
 ```
 
-The app is at [http://localhost:5173](http://localhost:5173). Vite proxies `/api/*` to `http://localhost:8001` (see `vite.config.ts`), so a future `fetch('/api/movies')` hits the Go server without CORS setup.
+The app is at [http://localhost:5173](http://localhost:5173). Vite proxies `/api/*` to `BE_URL` (see `vite.config.ts`), so a future `fetch('/api/movies')` hits the Go server without CORS setup.
+
+`BE_URL` is set in `.env` (defaults to `http://localhost:8001`, committed). Override it per machine in `.env.local` if your backend runs elsewhere.
 
 | Command         | Purpose                    |
 |-----------------|----------------------------|
@@ -28,6 +30,7 @@ The app is at [http://localhost:5173](http://localhost:5173). Vite proxies `/api
 | `npm run build` | Typecheck and production bundle |
 | `npm run preview` | Serve the production build |
 | `npm run lint`  | Oxlint                     |
+| `npm run fetch-openapi` | Fetch `${BE_URL}/openapi.yaml` and save it to `api/openapi.yaml` |
 
 ## Routing
 

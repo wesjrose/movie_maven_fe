@@ -39,3 +39,4 @@ Thumbs.db
 /api/*
 .cursor/*
 AGENTS.md
+.env

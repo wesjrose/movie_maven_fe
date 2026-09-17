@@ -17,12 +17,13 @@ Requires Node 20+.
 
 ```bash
 npm install
+cp .env.example .env
 npm run dev
 ```
 
 The app is at [http://localhost:5173](http://localhost:5173). Vite proxies `/api/*` to `BE_URL` (see `vite.config.ts`), so a future `fetch('/api/movies')` hits the Go server without CORS setup.
 
-`BE_URL` is set in `.env` (defaults to `http://localhost:8001`, committed). Override it per machine in `.env.local` if your backend runs elsewhere.
+`BE_URL` is set in `.env`, which is not committed — copy `.env.example` to `.env` (defaults to `http://localhost:8001`) and adjust if your backend runs elsewhere.
 
 | Command         | Purpose                    |
 |-----------------|----------------------------|

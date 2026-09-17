@@ -7,6 +7,12 @@ export default defineConfig(({ mode }) => {
   // BE_URL is only used here in Node, never bundled into client code.
   const env = loadEnv(mode, process.cwd(), '')
 
+  if (!env.BE_URL) {
+    throw new Error(
+      'BE_URL is not set. Copy .env.example to .env (or .env.local) and set BE_URL, e.g. BE_URL=http://localhost:8001',
+    )
+  }
+
   return {
     plugins: [react()],
     server: {

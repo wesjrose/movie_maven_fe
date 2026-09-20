@@ -1,4 +1,5 @@
-import type { ApiError, ListMoviesResponse } from './types.ts'
+import { errorMessage } from './http.ts'
+import type { ListMoviesResponse } from './types.ts'
 
 const API_BASE = '/api'
 
@@ -15,20 +16,8 @@ export async function listMovies(
 
   const response = await fetch(`${API_BASE}/movies?${params}`)
   if (!response.ok) {
-    throw new Error(await errorMessage(response))
+    throw new Error(await errorMessage(response, 'Failed to load movies'))
   }
 
   return (await response.json()) as ListMoviesResponse
-}
-
-async function errorMessage(response: Response): Promise<string> {
-  try {
-    const body = (await response.json()) as ApiError
-    if (body && typeof body.error === 'string' && body.error) {
-      return body.error
-    }
-  } catch {
-    // Body was not JSON; fall through to the status text.
-  }
-  return response.statusText || 'Failed to load movies'
 }

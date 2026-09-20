@@ -1,9 +1,11 @@
 import { useEffect, useRef } from 'react'
+import { useGenres } from '../hooks/useGenres.ts'
 import { useMovieFeed } from '../hooks/useMovieFeed.ts'
 import { MovieCard } from './MovieCard.tsx'
 
 export function MovieFeed() {
   const { movies, error, isLoading, hasMore, loadNext } = useMovieFeed()
+  const genresById = useGenres()
   const sentinelRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -49,7 +51,7 @@ export function MovieFeed() {
       <ol className="movie-feed">
         {movies.map((movie, index) => (
           <li key={movie.id}>
-            <MovieCard movie={movie} priority={index < 2} />
+            <MovieCard movie={movie} genresById={genresById} priority={index < 2} />
           </li>
         ))}
       </ol>

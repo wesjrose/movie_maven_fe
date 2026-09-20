@@ -48,3 +48,12 @@ export function movieReleaseDateLabel(releaseDate: string | null): string | null
 export function movieVoteRounded(voteAverage: number): number {
   return Math.round(voteAverage)
 }
+
+export function movieGenreNames(
+  genreIds: number[],
+  genresById: Map<number, string>,
+): string[] {
+  return genreIds
+    .map((id) => genresById.get(id))
+    .filter((name): name is string => Boolean(name))
+}

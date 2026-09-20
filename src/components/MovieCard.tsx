@@ -1,5 +1,6 @@
 import type { Movie } from '../api/types.ts'
 import {
+  movieGenreNames,
   moviePosterSrcSet,
   moviePosterUrl,
   movieReleaseDateLabel,
@@ -8,14 +9,16 @@ import {
 
 type MovieCardProps = {
   movie: Movie
+  genresById: Map<number, string>
   priority?: boolean
 }
 
-export function MovieCard({ movie, priority = false }: MovieCardProps) {
+export function MovieCard({ movie, genresById, priority = false }: MovieCardProps) {
   const posterUrl = moviePosterUrl(movie.poster_path)
   const posterSrcSet = moviePosterSrcSet(movie.poster_path)
   const releasedOn = movieReleaseDateLabel(movie.release_date)
   const rating = movieVoteRounded(movie.vote_average)
+  const genreNames = movieGenreNames(movie.genre_ids, genresById)
 
   return (
     <article className="movie-card">
@@ -50,6 +53,15 @@ export function MovieCard({ movie, priority = false }: MovieCardProps) {
             {rating}
           </span>
         </p>
+        {genreNames.length > 0 ? (
+          <ul className="movie-card__genres">
+            {genreNames.map((name) => (
+              <li key={name} className="movie-card__genre">
+                {name}
+              </li>
+            ))}
+          </ul>
+        ) : null}
       </div>
     </article>
   )

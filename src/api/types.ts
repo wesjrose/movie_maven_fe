@@ -27,6 +27,17 @@ export type ListMoviesResponse = {
   movies: Movie[]
 }
 
+export type Genre = {
+  id: number
+  media_type: 'movie' | 'tv'
+  name: string
+}
+
+export type PopulateGenresResponse = {
+  saved: number
+  genres: Genre[]
+}
+
 export type ApiError = {
   error: string
 }

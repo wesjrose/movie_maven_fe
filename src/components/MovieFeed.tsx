@@ -1,11 +1,14 @@
 import { useEffect, useRef } from 'react'
-import { useGenres } from '../hooks/useGenres.ts'
 import { useMovieFeed } from '../hooks/useMovieFeed.ts'
 import { MovieCard } from './MovieCard.tsx'
 
-export function MovieFeed() {
-  const { movies, error, isLoading, hasMore, loadNext } = useMovieFeed()
-  const genresById = useGenres()
+type MovieFeedProps = {
+  genreId: number | null
+  genresById: Map<number, string>
+}
+
+export function MovieFeed({ genreId, genresById }: MovieFeedProps) {
+  const { movies, error, isLoading, hasMore, loadNext } = useMovieFeed(genreId)
   const sentinelRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -43,7 +46,11 @@ export function MovieFeed() {
   }
 
   if (!isLoading && movies.length === 0) {
-    return <p className="feed-status">No movies in the catalog yet.</p>
+    return (
+      <p className="feed-status">
+        {genreId === null ? 'No movies in the catalog yet.' : 'No movies match this genre.'}
+      </p>
+    )
   }
 
   return (

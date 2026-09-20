@@ -17,6 +17,9 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     server: {
       port: 5173,
+      // Bind to 0.0.0.0 so other devices on the LAN can reach this dev
+      // server (e.g. http://<this-machine's-LAN-IP>:5173), not just localhost.
+      host: true,
       proxy: {
         // Frontend calls `/api/...`; Vite forwards to the Go backend.
         // Example: GET /api/movies → ${BE_URL}/movies

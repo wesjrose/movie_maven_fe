@@ -187,6 +187,28 @@ a:hover {
   color: var(--danger);
 }
 
+.genre-filter {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin: 1rem 0 0;
+}
+
+.genre-filter label {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.genre-filter select {
+  min-height: 44px;
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+
 .movie-feed {
   list-style: none;
   margin: 1rem 0 0;

@@ -2,7 +2,10 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { listMovies, MOVIE_PAGE_SIZE } from '../api/movies.ts'
 import type { Movie } from '../api/types.ts'
 
-export function useMovieFeed() {
+// `genreId` is only read on mount — the caller remounts this hook (e.g. via
+// a `key` on the component using it) when the filter changes, so a stale
+// in-flight request from the previous filter can never land in fresh state.
+export function useMovieFeed(genreId: number | null = null) {
   const [movies, setMovies] = useState<Movie[]>([])
   const [error, setError] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(true)
@@ -28,7 +31,7 @@ export function useMovieFeed() {
     setError(null)
 
     try {
-      const data = await listMovies(pageRef.current + 1, MOVIE_PAGE_SIZE)
+      const data = await listMovies(pageRef.current + 1, MOVIE_PAGE_SIZE, genreId)
       pageRef.current = data.page
       totalPagesRef.current = data.total_pages
       setHasMore(data.total_pages > 0 && data.page < data.total_pages)
@@ -41,7 +44,7 @@ export function useMovieFeed() {
       loadingRef.current = false
       setIsLoading(false)
     }
-  }, [])
+  }, [genreId])
 
   useEffect(() => {
     void loadNext()
